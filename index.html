@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deteksi Khodam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-image: url("https://source.unsplash.com/1600x900/?dark,forest");
+        background-size: cover;
+        background-attachment: fixed;
+      }
+
+      .overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+      .outlined-text-black {
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+      }
+
+      .outlined-text-white {
+        text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col items-center bg-gray-900 text-white">
+    <div class="overlay"></div>
+    <div class="z-10 w-full max-w-4xl p-6">
+      <h1 class="text-4xl font-bold text-center mb-8">Cek Khodam</h1>
+      <div class="mb-4 w-full flex justify-center gap-3">
+        <input type="text" id="nameInput" class="block w-56 text-black p-2 h-10 border border-gray-600 rounded-md" placeholder="Nama seseorang" />
+        <button id="detectBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">Submit</button>
+      </div>
+      <div id="result" class="mt-4 w-full overflow-x-auto table-container">
+        <table class="min-w-full bg-white text-black rounded-md">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="py-2 px-4 border border-gray-300 text-center">Nama</th>
+              <th class="py-2 px-4 border border-gray-300 text-center">Khodam kamu</th>
+              <th class="py-2 px-4 border border-gray-300 text-center">Gambar</th>
+            </tr>
+          </thead>
+          <tbody id="resultBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const khodams = [
+        { name: "Ayam Colorfull", image: "image/ayam.jpg" },
+        { name: "Beruang Galau", image: "image/beruang.jpeg" },
+        { name: "Burung Hantu", image: "image/burunghantu.jpeg" },
+        { name: "Tupai Ngondek", image: "image/tupai.jpeg" },
+        { name: "Monyet Kembar", image: "image/monyet.jpeg" },
+        { name: "Ayam Mail", image: "image/mail.jpeg" },
+        { name: "Gagal Presiden", image: "image/ganjar.jpeg" },
+        { name: "Cinderella Mringis", image: "image/cinderella.jpeg" },
+        { name: "Surat Jebol", image: "image/surat.jpeg" },
+        { name: "Supra Bapa", image: "image/supra.jpeg" },
+        { name: "Abang Sale", image: "image/saleh.jpeg" },
+        { name: "Sumanto", image: "image/sumanto.jpeg" },
+        { name: "Jarjit Singh", image: "image/jarjit.jpeg" },
+        { name: "Pocong", image: "image/pocong.jpeg" },
+        { name: "Tuyul", image: "image/tuyul.jpeg" },
+        { name: "Banteng", image: "image/banteng.jpeg" },
+        { name: "Wibu", image: "image/wibu.jpeg" },
+        { name: "Linglung", image: "image/ling.jpeg" },
+        { name: "Lancelot", image: "image/lancelot.jpeg" },
+        { name: "Balmond", image: "image/balmond.jpeg" },
+        { name: "Kumar", image: "image/kumar.jpeg" },
+      ];
+
+      function detectKhodam() {
+        const name = document.getElementById("nameInput").value.trim();
+        const resultBody = document.getElementById("resultBody");
+
+        if (name === "") {
+          alert("Masukkan nama seseorang.");
+          return;
+        }
+
+        const randomKhodam = khodams[Math.floor(Math.random() * khodams.length)];
+        const resultRow = document.createElement("tr");
+
+        const nameCell = document.createElement("td");
+        nameCell.className = "py-2 px-4 border border-gray-300 outlined-text-white text-lg text-center font-bold";
+        nameCell.textContent = name;
+        resultRow.appendChild(nameCell);
+
+        const khodamCell = document.createElement("td");
+        khodamCell.className = "py-2 px-4 border border-gray-300 text-center";
+        const khodamText = document.createElement("div");
+        khodamText.className = "text-black text-lg outlined-text-white font-semibold px-2 py-1 rounded-md inline-block";
+        khodamText.textContent = "Khodam kamu adalah ";
+        khodamCell.appendChild(khodamText);
+        const khodamName = document.createElement("span");
+        khodamName.className = "text-white ml-1 font-bold text-lg outlined-text-black";
+        khodamName.textContent = randomKhodam.name;
+        khodamCell.appendChild(khodamName);
+        resultRow.appendChild(khodamCell);
+
+        const imageCell = document.createElement("td");
+        imageCell.className = "py-2 px-4 border border-gray-300 text-center";
+        const imgElement = document.createElement("img");
+        imgElement.src = randomKhodam.image;
+        imgElement.alt = randomKhodam.name;
+        imgElement.className = "mx-auto w-32 h-20 object-cover";
+        imageCell.appendChild(imgElement);
+        resultRow.appendChild(imageCell);
+
+        resultBody.insertBefore(resultRow, resultBody.firstChild);
+
+        const randomColor = getRandomColor();
+        resultRow.style.backgroundColor = randomColor;
+
+        document.getElementById("nameInput").value = "";
+
+        document.getElementById("result").scrollTop = 0;
+      }
+
+      function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+
+      document.getElementById("detectBtn").addEventListener("click", detectKhodam);
+      document.getElementById("nameInput").addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          detectKhodam();
+        }
+      });
+    </script>
+  </body>
+</html>
